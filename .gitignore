@@ -1,0 +1,31 @@
+##默认的编译输出目录为/target目录，其下内容不进仓库
+target/
+logs/
+
+## maven相关的不需要入库的文件
+mvnw
+mvnw.cmd
+.mvn/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+logs
