@@ -1,7 +1,7 @@
 package com.fxg.api.security.wrapper;
 
 import com.fxg.api.security.annotation.Decrypt;
-import com.fxg.api.security.SecretKeyConfig;
+import com.fxg.api.security.config.ApiSecurityConfig;
 import com.fxg.api.security.util.AESUtil;
 import com.fxg.api.security.interceptor.AESKeyHandler;
 import org.slf4j.Logger;
@@ -24,13 +24,13 @@ public class HttpInputMessageWrapper implements HttpInputMessage {
 	private InputStream body;
 
 
-	public HttpInputMessageWrapper(HttpInputMessage inputMessage, SecretKeyConfig secretKeyConfig, Decrypt decrypt)
+	public HttpInputMessageWrapper(HttpInputMessage inputMessage, ApiSecurityConfig apiSecurityConfig, Decrypt decrypt)
 			throws Exception {
 
 		String aesKey = AESKeyHandler.get();
 		logger.info("接收到aesKey:{}", aesKey);
 
-		boolean showLog = secretKeyConfig.isShowLog();
+		boolean showLog = apiSecurityConfig.isShowLog();
 
 		if (StringUtils.isEmpty(aesKey)) {
 			throw new IllegalArgumentException("aesKey is null");

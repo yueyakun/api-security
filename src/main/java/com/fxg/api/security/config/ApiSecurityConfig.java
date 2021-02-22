@@ -1,4 +1,4 @@
-package com.fxg.api.security;
+package com.fxg.api.security.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "api.security")
-public class SecretKeyConfig {
+public class ApiSecurityConfig {
 
 	//API加解密、签名验证、重放验证 整体开关
 	private boolean open = true;
