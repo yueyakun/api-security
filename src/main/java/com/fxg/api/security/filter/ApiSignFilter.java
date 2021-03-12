@@ -127,7 +127,7 @@ public class ApiSignFilter implements Filter {
 				if (sign.equals(paramSign)) {
 					logger.info("sign success!");
 				} else {
-					logger.error("sign failed! paramSing:{},sign:{}", paramSign, sign);
+					logger.error("sign failed! paramSign:{},sign:{}", paramSign, sign);
 					httpServletResponse.setStatus(SIGN_FAILED);
 					return;
 				}
@@ -146,7 +146,7 @@ public class ApiSignFilter implements Filter {
 		long toleranceTime = currentTime - requestTime;
 		// 如果请求时间大于当前时间或者小于最小容忍请求时间, 判定为超时
 		if (requestTime > currentTime || apiSecurityConfig.getTimeOut() < toleranceTime) {
-			logger.warn("Timestamp validation failed! requestTime:{}, currentTime:{},timeOut:{}", requestTime,
+			logger.error("Timestamp validation failed! requestTime:{}, currentTime:{},timeOut:{}", requestTime,
 					currentTime, apiSecurityConfig.getTimeOut());
 			response.setStatus(ILLEGAL_TIMESTAMP);
 			return true;

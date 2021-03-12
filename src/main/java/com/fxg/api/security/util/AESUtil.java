@@ -1,11 +1,11 @@
 package com.fxg.api.security.util;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author biehl

@@ -1,48 +1,42 @@
 package com.fxg.api.security.wrapper;
 
 import com.fxg.api.security.annotation.Decrypt;
-import com.fxg.api.security.config.ApiSecurityConfig;
-import com.fxg.api.security.util.AESUtil;
 import com.fxg.api.security.interceptor.AESKeyHandler;
+import com.fxg.api.security.util.AESUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.util.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.stream.Collectors;
 
 public class HttpInputMessageWrapper implements HttpInputMessage {
 
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private HttpHeaders headers;
 	private InputStream body;
+	boolean showLog;
 
 
-	public HttpInputMessageWrapper(HttpInputMessage inputMessage, ApiSecurityConfig apiSecurityConfig, Decrypt decrypt)
-			throws Exception {
+	public HttpInputMessageWrapper(HttpInputMessage inputMessage, Boolean showLog, Decrypt decrypt) throws IOException {
+
+		this.showLog = showLog;
+		this.headers = inputMessage.getHeaders();
 
 		String aesKey = AESKeyHandler.get();
-		logger.info("接收到aesKey:{}", aesKey);
+		this.log("received aesKey:{}", aesKey);
 
-		boolean showLog = apiSecurityConfig.isShowLog();
-
-		if (StringUtils.isEmpty(aesKey)) {
+		if (!StringUtils.hasText(aesKey)) {
 			throw new IllegalArgumentException("aesKey is null");
 		}
 
-		this.headers = inputMessage.getHeaders();
 		String content = new BufferedReader(new InputStreamReader(inputMessage.getBody())).lines()
 				.collect(Collectors.joining(System.lineSeparator()));
 
-		if (showLog) {
-			logger.info("Encrypted data received：{}", content);
-		}
+		this.log("Encrypted data received：{}", content);
 
 		String decryptBody;
 		// 如果未加密
@@ -52,7 +46,7 @@ public class HttpInputMessageWrapper implements HttpInputMessage {
 				logger.error("Not support unencrypted content:{}", content);
 				throw new RuntimeException("Not support unencrypted content:" + content);
 			}
-			logger.info("Unencrypted without decryption:{}", content);
+			this.log("Unencrypted without decryption:{}", content);
 			decryptBody = content;
 		} else {
 			StringBuilder json = new StringBuilder();
@@ -65,9 +59,7 @@ public class HttpInputMessageWrapper implements HttpInputMessage {
 				}
 			}
 			decryptBody = json.toString();
-			if (showLog) {
-				logger.info("After decryption：{}", decryptBody);
-			}
+			this.log("After decryption：{}", decryptBody);
 		}
 
 		this.body = new ByteArrayInputStream(decryptBody.getBytes());
@@ -81,5 +73,11 @@ public class HttpInputMessageWrapper implements HttpInputMessage {
 	@Override
 	public HttpHeaders getHeaders() {
 		return headers;
+	}
+
+	private void log(String template, String message) {
+		if (this.showLog) {
+			logger.info(template, message);
+		}
 	}
 }

@@ -1,22 +1,18 @@
 package com.fxg.api.security.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+
+import javax.crypto.Cipher;
 
 
 public class RSAUtil {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 	/**
 	 * encryption algorithm RSA
 	 */

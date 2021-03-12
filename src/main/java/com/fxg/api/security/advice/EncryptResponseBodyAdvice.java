@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fxg.api.security.annotation.EnableSecurity;
 import com.fxg.api.security.annotation.Encrypt;
 import com.fxg.api.security.config.ApiSecurityConfig;
-import com.fxg.api.security.filter.ApiSignFilter;
 import com.fxg.api.security.interceptor.AESKeyHandler;
 import com.fxg.api.security.util.AESUtil;
 import org.slf4j.Logger;
@@ -27,7 +26,7 @@ import java.util.Objects;
 @ConditionalOnBean(annotation = {EnableSecurity.class})
 public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ApiSecurityConfig apiSecurityConfig;
@@ -56,24 +55,26 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 	private Object encryptBody(Object data) {
 
 		String aesKey = AESKeyHandler.get();
-		log.info("接收到aesKey:{}", aesKey);
+		this.log("received aesKey:{}", aesKey);
 
 		try {
 			String content = JSON.writeValueAsString(data);
-			if (apiSecurityConfig.isShowLog()) {
-				log.info("Pre-encrypted data：{}", content);
-			}
+			this.log("Pre-encrypted data：{}", content);
 			if (!StringUtils.hasText(aesKey)) {
 				throw new RuntimeException("AES_KEY IS EMPTY!");
 			}
 			String result = AESUtil.encrypt(content, aesKey);
-			if (apiSecurityConfig.isShowLog()) {
-				log.info("After encryption：{}", result);
-			}
+			this.log("After encryption：{}", result);
 			return result;
 		} catch (Exception e) {
-			log.error("Encrypted data exception", e);
+			logger.error("Encrypted data exception", e);
 		}
 		return null;
+	}
+
+	private void log(String template, String message) {
+		if (this.apiSecurityConfig.isShowLog()) {
+			logger.info(template, message);
+		}
 	}
 }
