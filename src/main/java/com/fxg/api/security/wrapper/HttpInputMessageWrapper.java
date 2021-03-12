@@ -1,16 +1,21 @@
 package com.fxg.api.security.wrapper;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
+
 import com.fxg.api.security.annotation.Decrypt;
 import com.fxg.api.security.interceptor.AESKeyHandler;
 import com.fxg.api.security.util.AESUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.util.StringUtils;
-
-import java.io.*;
-import java.util.stream.Collectors;
 
 public class HttpInputMessageWrapper implements HttpInputMessage {
 
@@ -51,7 +56,7 @@ public class HttpInputMessageWrapper implements HttpInputMessage {
 		} else {
 			StringBuilder json = new StringBuilder();
 			content = content.replaceAll(" ", "+");
-			if (!StringUtils.isEmpty(content)) {
+			if (StringUtils.hasText(content)) {
 				String[] contents = content.split("\\|");
 				for (String value : contents) {
 					value = AESUtil.decrypt(value, aesKey);
