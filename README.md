@@ -1,5 +1,18 @@
 # api-security
-一个基于RAS+AES的API签名、加密、解密的框架
+一个基于RSA+AES的API签名、加密、解密的框架
+
+## 缘起
+我经常会写一些小项目放到阿里云上运行，有些是对外开放的项目，虽然访问的人数不多，但是安全问题还是需要考虑的。于是我就想给自己写的小项目加上API加密功能。
+
+一个安全的API应该具有以下几个安全功能：防篡改、防重放攻击、防中间人攻击。
+
+一般情况下，网站使用https，再加个请求参数签名的功能就能满足安全需要了。但是在浏览器控制台，接口的入参和返回结果依然是明文的，如果遇到中间人攻击，数据还是有泄露的可能。
+所以我就想把请求参数和返回结果都加密。
+
+## 实现思路
+具体的实现思路和demo项目我都记录在我的这几篇博客中了：
+
+[博客地址](https://blog.fengxiuge.top/categories/API%E5%8A%A0%E5%AF%86/)
 
 ## 使用方法
 
@@ -38,7 +51,12 @@ public-key 和 private-key 没有默认配置，可以通过网站在线生成�
 * DecryptRequestBodyAdvice：用来解密 RequestBody 的 @ControllerAdvice 类
 * EncryptResponseBodyAdvice：用来加密 ResponseBody 的 @ControllerAdvice 类
 
+### 增加配置扫描包
 
+修改启动类上的 @SpringBootApplication 注解，增加配置扫描包，如：
+@SpringBootApplication(scanBasePackages = {"com.xxx.xxx", "com.fxg.api.security"})
+其中 com.xxx.xxx 是你启动类所在包名，com.fxg.api.security 是 api-security 的包名。
+这样 spring boot 在启动的时候才后扫描 api-security 包，把响应的组件注入到 Spring 容器中。
 
 ## 测试签名、加密、解密功能
 
